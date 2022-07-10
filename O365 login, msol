@@ -1,0 +1,21 @@
+How to retrieve all of  the users and their licenses o365
+
+05 March 2020
+11:56
+
+https://gcits.com/knowledge-base/get-office-365-users-specific-license-type-via-powershell/
+
+It can sometimes be useful to get a list of Office 365 users with a specific license type via PowerShell. Instead of logging into the Office 365 portal and using a filtered view in the admin center, you can do it straight from the command line.
+1. Connect to Office 365 via Powershell. If this cmdlet doesn’t work for you, follow this quick guide for instructions on installing the required PowerShell module.
+1	Connect-MsolService
+2. Run Get-MsolAccountSku to get a list of the current licenses in your Office 365 tenant. Make a note of the AccountSkuId value for the license you want to filter on.
+1	Get-MsolAccountSku
+
+
+3. Now you can edit this short script to get the users matching that license. In this case, we’re getting users with the EnterprisePremium license.
+1	Get-MsolUser | Where-Object {($_.licenses).AccountSkuId -match "EnterprisePremium"}
+Replace EnterprisePremium with the AccountSkuID you’re trying to filter by. Since we’re using the -match operator we don’t need to type the entire AccountSkuID, we can just type enough of it to ensure that we’re only retrieving that specific one.
+
+Export these users to a text document
+You can export these users to a text document using the Out-File cmdlet.
+1	Get-MsolUser -all| Where-Object {($_.licenses).AccountSkuId -match "EnterprisePremium"} | Out-file C:\temp\EnterprisePremiumUsers.csv
